@@ -1,8 +1,5 @@
 #!/bin/sh
 
-env | grep BACKUP
-env | grep AWS
-
 
 # == CHECKS ENVIRONMENT ==
 
