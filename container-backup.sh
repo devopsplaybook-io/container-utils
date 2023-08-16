@@ -1,27 +1,32 @@
 #!/bin/sh
 
 
+message() { 
+  echo "($(date '+%Y-%m-%d %H:%M:%S')) $1"
+}
+
+
 # == CHECKS ENVIRONMENT ==
 
 if [ "${BACKUP_FOLDER}" = "" ]; then
-  echo "ERROR - Missing Envrionment Variable: BACKUP_FOLDER"
+  message "ERROR - Missing Envrionment Variable: BACKUP_FOLDER"
   exit 1
 fi
 if [ "${RESTIC_PASSWORD}" = "" ]; then
-  echo "ERROR - Missing Envrionment Variable: RESTIC_PASSWORD"
+  message "ERROR - Missing Envrionment Variable: RESTIC_PASSWORD"
   exit 1
 fi
 if [ "${BACKUP_RESTIC_REPO}" = "" ]; then
-  echo "ERROR - Backup Folder Doesn't Exist: BACKUP_RESTIC_REPO"
+  message "ERROR - Backup Folder Doesn't Exist: BACKUP_RESTIC_REPO"
   exit 1
 fi
 if [ ! -d ${BACKUP_FOLDER} ]; then
-  echo "ERROR - Backup Folder Doesn't Exist: BACKUP_FOLDER"
+  message "ERROR - Backup Folder Doesn't Exist: BACKUP_FOLDER"
   exit 1
 fi
 
 if ! type "restic" > /dev/null; then
-  echo "ERROR - Restic command not found"
+  message "ERROR - Restic command not found"
   exit 1
 fi
 
@@ -30,9 +35,9 @@ fi
 
 restic snapshots --repo ${BACKUP_RESTIC_REPO}
 if [ $? -eq 0 ]; then
-  echo "Repository is initialized"
+  message "Repository is initialized"
 else
-  echo "Repository is not initialized"
+  message "Repository is not initialized"
   restic init -r ${BACKUP_RESTIC_REPO}
 fi
 
@@ -40,30 +45,32 @@ fi
 # == CHECKS BACKUP_FOLDER ==
 
 if [ -z "$(ls -A "${BACKUP_FOLDER}")" ]; then
-  echo "Directory is empty"
+  message "Directory is empty"
 else
-  echo "Directory is not empty"
+  message "Directory is not empty"
 fi
 
 
 # == DO BACKUP ==
 
 if [ "${BACKUP_DO_PROCESS}" = "" ]; then
-  echo "Not Processing Backup"
+  message "Not Processing Backup"
   exit 0
 fi
 
 if [ "${BACKUP_DO_START_DELAY}" != "" ]; then
-  echo "First Backup in ${BACKUP_DO_START_DELAY}s"
+  message "First Backup in ${BACKUP_DO_START_DELAY}s"
   sleep ${BACKUP_DO_START_DELAY}
 fi
 
 while true; do
   cd ${BACKUP_FOLDER}
+  message "Starting backup"
   restic -r ${BACKUP_RESTIC_REPO} backup .
+  message "Finished backup"
   if [ "${BACKUP_DO_LOOP_FREQUENCY}" = "" ]; then
     exit 0
   fi
-  echo "Next Backup in ${BACKUP_DO_LOOP_FREQUENCY}s"
+  message "Next Backup in ${BACKUP_DO_LOOP_FREQUENCY}s"
   sleep ${BACKUP_DO_LOOP_FREQUENCY}
 done
