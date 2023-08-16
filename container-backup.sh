@@ -53,12 +53,17 @@ if [ "${BACKUP_DO_PROCESS}" = "" ]; then
   exit 0
 fi
 
+if [ "${BACKUP_DO_START_DELAY}" != "" ]; then
+  echo "First Backup in ${BACKUP_DO_START_DELAY}s"
+  sleep ${BACKUP_DO_START_DELAY}
+fi
+
 while true; do
   cd ${BACKUP_FOLDER}
   restic -r ${BACKUP_RESTIC_REPO} backup .
-  echo "Next Backup in ${BACKUP_DO_LOOP_FREQUENCY}s"
   if [ "${BACKUP_DO_LOOP_FREQUENCY}" = "" ]; then
     exit 0
   fi
+  echo "Next Backup in ${BACKUP_DO_LOOP_FREQUENCY}s"
   sleep ${BACKUP_DO_LOOP_FREQUENCY}
 done
