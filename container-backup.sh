@@ -33,27 +33,33 @@ fi
 
 # == CHECKS REPO INIT ==
 
-restic snapshots --repo ${BACKUP_RESTIC_REPO}
+restic snapshots --repo ${BACKUP_RESTIC_REPO} > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   message "Repository is initialized"
+  message "Known snapshots..."
+  restic snapshots --repo ${BACKUP_RESTIC_REPO}
 else
   message "Repository is not initialized"
   restic init -r ${BACKUP_RESTIC_REPO}
 fi
 
 
-# == CHECKS BACKUP_FOLDER ==
+# == RESTORE IF EMPTY ==
 
 if [ -z "$(ls -A "${BACKUP_FOLDER}")" ]; then
   message "Directory is empty"
+  message "Restoring last snapshot"
+  restic -r ${BACKUP_RESTIC_REPO} restore latest --target ${BACKUP_FOLDER} || true
+  message "Snapshot Restored"
 else
-  message "Directory is not empty"
+  message "Directory is not empty"  
 fi
+
 
 
 # == DO BACKUP ==
 
-if [ "${BACKUP_DO_PROCESS}" = "" ]; then
+if [ "${BACKUP_DO_PROCESS}" != "Y" ]; then
   message "Not Processing Backup"
   exit 0
 fi
@@ -66,7 +72,7 @@ fi
 while true; do
   cd ${BACKUP_FOLDER}
   message "Starting backup"
-  restic -r ${BACKUP_RESTIC_REPO} backup .
+  restic -r ${BACKUP_RESTIC_REPO} backup . || true
   message "Finished backup"
   if [ "${BACKUP_DO_LOOP_FREQUENCY}" = "" ]; then
     exit 0
