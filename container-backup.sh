@@ -30,6 +30,7 @@ if ! type "restic" > /dev/null; then
   exit 1
 fi
 
+export GOMAXPROCS=1
 
 # == CHECKS REPO INIT ==
 
