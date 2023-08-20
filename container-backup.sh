@@ -50,7 +50,7 @@ fi
 if [ -z "$(ls -A "${BACKUP_FOLDER}")" ]; then
   message "Directory is empty"
   message "Restoring last snapshot"
-  restic -r ${BACKUP_RESTIC_REPO} restore latest --target ${BACKUP_FOLDER} || true
+  nice -10 restic -r ${BACKUP_RESTIC_REPO} restore latest --target ${BACKUP_FOLDER} || true
   message "Snapshot Restored"
 else
   message "Directory is not empty"  
