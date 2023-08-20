@@ -73,7 +73,7 @@ fi
 while true; do
   cd ${BACKUP_FOLDER}
   message "Starting backup"
-  restic -r ${BACKUP_RESTIC_REPO} backup . || true
+  nice -10 restic -r ${BACKUP_RESTIC_REPO} backup . || true
   message "Finished backup"
   if [ "${BACKUP_DO_LOOP_FREQUENCY}" = "" ]; then
     exit 0
