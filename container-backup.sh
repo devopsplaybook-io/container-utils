@@ -1,9 +1,11 @@
 #!/bin/sh
 
 
+
 message() { 
   echo "($(date '+%Y-%m-%d %H:%M:%S')) $1"
 }
+
 
 
 # == CHECKS ENVIRONMENT ==
@@ -29,11 +31,6 @@ if ! type "restic" > /dev/null; then
   message "ERROR - Restic command not found"
   exit 1
 fi
-
-if [ "${BACKUP_HOSTNAME}" = "" ]; then
-  BACKUP_HOSTNAME=$(hostname | cut -f1 -d" ")  
-fi
-BACKUP_HOSTNAME_REAL=$(hostname | cut -f1 -d" ")  
 
 
 
