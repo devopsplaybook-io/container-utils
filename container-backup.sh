@@ -30,7 +30,12 @@ if ! type "restic" > /dev/null; then
   exit 1
 fi
 
-export GOMAXPROCS=1
+if [ "${BACKUP_HOSTNAME}" = "" ]; then
+  BACKUP_HOSTNAME=$(hostname | cut -f1 -d" ")  
+fi
+BACKUP_HOSTNAME_REAL=$(hostname | cut -f1 -d" ")  
+
+
 
 # == CHECKS REPO INIT ==
 
@@ -43,6 +48,7 @@ else
   message "Repository is not initialized"
   restic init -r ${BACKUP_RESTIC_REPO}
 fi
+
 
 
 # == RESTORE IF EMPTY ==
@@ -73,7 +79,10 @@ fi
 while true; do
   cd ${BACKUP_FOLDER}
   message "Starting backup"
-  nice -10 restic -r ${BACKUP_RESTIC_REPO} backup . || true
+  restic backup \
+    -r ${BACKUP_RESTIC_REPO} \
+    --group-by paths \
+    . || true
   message "Finished backup"
   if [ "${BACKUP_DO_LOOP_FREQUENCY}" = "" ]; then
     exit 0
