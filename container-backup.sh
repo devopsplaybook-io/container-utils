@@ -79,6 +79,8 @@ fi
 
 while true; do
   cd "${BACKUP_FOLDER}"
+  message "Removing stale locks"
+  restic unlock -r "${BACKUP_RESTIC_REPO}" || true
   message "Starting backup"
   restic backup \
     -r "${BACKUP_RESTIC_REPO}" \

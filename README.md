@@ -42,17 +42,17 @@ On every run, the script performs the following steps:
 
 ### Environment Variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `BACKUP_FOLDER` | Yes | — | Absolute path of the directory to back up / restore into. |
-| `BACKUP_RESTIC_REPO` | Yes | — | Restic repository URI (e.g. `s3:s3.amazonaws.com/my-bucket/my-app`). |
-| `RESTIC_PASSWORD` | Yes | — | Password used to encrypt the restic repository. |
-| `BACKUP_DO_PROCESS` | No | *(unset)* | Set to `Y` to enable the backup loop. When unset or any other value, the script only performs validation + restore-if-empty, then exits. Useful for init-container use. |
-| `BACKUP_DO_START_DELAY` | No | *(none)* | Seconds to wait before the first backup (after restore). |
-| `BACKUP_DO_LOOP_FREQUENCY` | No | *(none)* | Seconds between consecutive backups. If unset, the script runs a single backup and exits. |
-| `BACKUP_DO_CLEANUP` | No | *(unset)* | Set to `Y` to enable retention / pruning after each backup. |
-| `BACKUP_CLEANUP_AGE_DAYS` | If `BACKUP_DO_CLEANUP=Y` | — | Snapshots older than this many days are eligible for deletion. |
-| `BACKUP_CLEANUP_KEEP_COUNT` | No | `1` | Minimum number of most-recent snapshots to keep, regardless of age. |
+| Variable                    | Required                 | Default   | Description                                                                                                                                                             |
+| --------------------------- | ------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BACKUP_FOLDER`             | Yes                      | —         | Absolute path of the directory to back up / restore into.                                                                                                               |
+| `BACKUP_RESTIC_REPO`        | Yes                      | —         | Restic repository URI (e.g. `s3:s3.amazonaws.com/my-bucket/my-app`).                                                                                                    |
+| `RESTIC_PASSWORD`           | Yes                      | —         | Password used to encrypt the restic repository.                                                                                                                         |
+| `BACKUP_DO_PROCESS`         | No                       | _(unset)_ | Set to `Y` to enable the backup loop. When unset or any other value, the script only performs validation + restore-if-empty, then exits. Useful for init-container use. |
+| `BACKUP_DO_START_DELAY`     | No                       | _(none)_  | Seconds to wait before the first backup (after restore).                                                                                                                |
+| `BACKUP_DO_LOOP_FREQUENCY`  | No                       | _(none)_  | Seconds between consecutive backups. If unset, the script runs a single backup and exits.                                                                               |
+| `BACKUP_DO_CLEANUP`         | No                       | _(unset)_ | Set to `Y` to enable retention / pruning after each backup.                                                                                                             |
+| `BACKUP_CLEANUP_AGE_DAYS`   | If `BACKUP_DO_CLEANUP=Y` | —         | Snapshots older than this many days are eligible for deletion.                                                                                                          |
+| `BACKUP_CLEANUP_KEEP_COUNT` | No                       | `1`       | Minimum number of most-recent snapshots to keep, regardless of age.                                                                                                     |
 
 Restic also honors its native variables such as `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `B2_ACCOUNT_ID`, etc., depending on the chosen backend. See the [restic documentation](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html) for the full list.
 
