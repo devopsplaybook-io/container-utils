@@ -52,6 +52,7 @@ On every run, the script performs the following steps:
 | `BACKUP_DO_LOOP_FREQUENCY`  | No                       | _(none)_  | Seconds between consecutive backups. If unset, the script runs a single backup and exits.                                                                               |
 | `BACKUP_DO_CLEANUP`         | No                       | _(unset)_ | Set to `Y` to enable retention / pruning after each backup.                                                                                                             |
 | `BACKUP_CLEANUP_AGE_DAYS`   | If `BACKUP_DO_CLEANUP=Y` | —         | Snapshots older than this many days are eligible for deletion.                                                                                                          |
+| `BACKUP_OPTIONS`            | No                       | _(none)_  | Additional command-line arguments passed to every restic command (e.g. `--password-command "echo $PASS"` or `--verbose`).                                               |
 | `BACKUP_CLEANUP_KEEP_COUNT` | No                       | `1`       | Minimum number of most-recent snapshots to keep, regardless of age.                                                                                                     |
 
 Restic also honors its native variables such as `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `B2_ACCOUNT_ID`, etc., depending on the chosen backend. See the [restic documentation](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html) for the full list.
@@ -74,6 +75,9 @@ export BACKUP_DO_LOOP_FREQUENCY="10800"
 export BACKUP_DO_CLEANUP="Y"
 export BACKUP_CLEANUP_AGE_DAYS="30"
 export BACKUP_CLEANUP_KEEP_COUNT="3"
+
+# Optional: extra restic flags (must be valid restic arguments)
+export BACKUP_OPTIONS="--password-command \"echo $RESTIC_PASSWORD\""
 
 ./container-backup.sh
 ```
