@@ -36,14 +36,14 @@ fi
 
 # == CHECKS REPO INIT ==
 
-restic snapshots --repo "${BACKUP_RESTIC_REPO}" > /dev/null 2>&1
+restic snapshots --repo "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS} > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   message "Repository is initialized"
   message "Known snapshots..."
-  restic snapshots --repo "${BACKUP_RESTIC_REPO}"
+  restic snapshots --repo "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS}
 else
   message "Repository is not initialized"
-  restic init -r "${BACKUP_RESTIC_REPO}"
+  restic init -r "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS}
 fi
 
 
@@ -53,7 +53,7 @@ fi
 if [ -z "$(ls -A "${BACKUP_FOLDER}")" ]; then
   message "Directory is empty"
   message "Restoring last snapshot"
-  nice -n 10 restic -r "${BACKUP_RESTIC_REPO}" restore latest --target "${BACKUP_FOLDER}" || true
+  nice -n 10 restic -r "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS} restore latest --target "${BACKUP_FOLDER}" || true
   message "Snapshot Restored"
 else
   message "Directory is not empty"  
@@ -80,10 +80,10 @@ fi
 while true; do
   cd "${BACKUP_FOLDER}"
   message "Removing stale locks"
-  restic unlock -r "${BACKUP_RESTIC_REPO}" || true
+  restic unlock -r "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS} || true
   message "Starting backup"
   restic backup \
-    -r "${BACKUP_RESTIC_REPO}" \
+    -r "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS} \
     --group-by paths \
     . || true
   message "Finished backup"
@@ -93,7 +93,7 @@ while true; do
     else
       message "Starting cleanup (keep last ${BACKUP_CLEANUP_KEEP_COUNT}, remove older than ${BACKUP_CLEANUP_AGE_DAYS} days)"
       restic forget \
-        -r "${BACKUP_RESTIC_REPO}" \
+        -r "${BACKUP_RESTIC_REPO}" ${BACKUP_OPTIONS} \
         --group-by paths \
         --keep-last "${BACKUP_CLEANUP_KEEP_COUNT}" \
         --keep-within "${BACKUP_CLEANUP_AGE_DAYS}d" \
